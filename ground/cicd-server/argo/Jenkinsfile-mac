@@ -7,8 +7,8 @@ pipeline {
     }
 
     environment {
-        DOCKERHUB_USERNAME = '1pro'
-        GITHUB_URL = 'https://github.com/k8s-1pro/install.git'
+        DOCKERHUB_USERNAME = 'jaewonkil'
+        GITHUB_URL = 'https://github.com/kiljw316/install.git'
         INSTALL_PATH = 'ground/cicd-server/argo'
     }
 
@@ -45,10 +45,12 @@ pipeline {
                             if (params.TARGET_ARGO == "argocd-image-updater") {
                                 // https://argocd-image-updater.readthedocs.io/en/stable/basics/update-methods/
                                 withCredentials([usernamePassword(credentialsId: 'docker_password', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                                    sh "echo ${USERNAME}:${PASSWORD}"
                                     HELM_DEPLOY_COMMAND += " --set config.registries[0].credentials=env:DOCKER_HUB_CREDS="+ '${USERNAME}' + ":" + '${PASSWORD}'
                                 }
                             }
 
+                            sh "echo ${HELM_DEPLOY_COMMAND}"
                             sh "eval ${HELM_DEPLOY_COMMAND}"
                             // sh "helm update argo-cd -n argo --kubeconfig " + '${KUBECONFIG}' + " --wait --timeout=10m "
                         }
